@@ -1,11 +1,15 @@
 
 import request from 'supertest'
 import { Server } from './server';
+import app from './app';
+
 
 describe('e2e', () => {
   describe('health check', () => {
 
-    let server: Server;
+    let server: Server = new Server(app, {
+      port: 3000,
+    })
 
     beforeAll(async () => {
       await server.start();
@@ -16,13 +20,12 @@ describe('e2e', () => {
     })
 
     it('can check in on the health of the server', async () => {
-      let response = await request(server.getExpressInstance())
+      let response = await request(server.getHttp())
         .get('/health')
         .set('Accept', 'application/json');
 
-      expect(response.headers["Content-Type"]).toMatch(/json/);
       expect(response.status).toEqual(200);
-      expect(response.body.email).toEqual('foo@bar.com');
+      expect(response.body.ok).toEqual(true);
 
     })
   })

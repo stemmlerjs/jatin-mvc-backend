@@ -1,3 +1,4 @@
+
 import mongoose from 'mongoose';
 import { config } from './config';
 import app from './app';
@@ -5,12 +6,24 @@ import http from 'http';
 
 let server: http.Server;
 
-mongoose.connect(config.mongoUrl).then(() => {
-  console.log('Connected to MongoDB');
-  server = app.listen(config.port, () => {
-    console.log(`Listening to port ${config.port}`);
-  });
-});
+let mongooseFactory = () => {
+  return {
+    start: () => mongoose.connect(config.mongoUrl)
+  }
+}
+
+export { mongooseFactory }
+
+// // Start mongo
+// mongoose.connect(config.mongoUrl).then(() => {
+//   console.log('Connected to MongoDB');
+
+//   // Start express
+//   server = app.listen(config.port, () => {
+//     console.log(`Listening to port ${config.port}`);
+//   });
+  
+// });
 
 const exitHandler = () => {
   if (server) {

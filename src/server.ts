@@ -1,16 +1,45 @@
 
+import * as Express from 'express'
+import { mongooseFactory } from '.';
+import http from 'http';
+
+interface ServerConfig {
+  port: number;
+}
+
 export class Server {
 
-  start () {
+  private express: Express.Application;
+  private http: http.Server | undefined;
+  
+  private database: {
+    start: () => Promise<typeof import("mongoose")>;
+  }
+  private serverConfig: ServerConfig;
 
+  constructor (express: Express.Application, serverConfig: ServerConfig) {
+    this.express = express;
+    this.database = mongooseFactory()
+    this.serverConfig = serverConfig;
   }
 
-  stop () {
+  async start () {
+    // Start the database
+    // await this.database.start();
 
+    // Start express
+    this.http = this.express.listen(this.serverConfig.port);
   }
 
-  getExpressInstance () {
-    
+  async stop () {
+    // Stop express
+    // Stop the database
+
+    this.http?.close();
+  }
+
+  getHttp () {
+    return this.http
   }
 
 }
