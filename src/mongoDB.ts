@@ -21,4 +21,9 @@ export class MongoDB {
   async stop () {
     this.instance.disconnect();
   }
+
+  getInstance () {
+    return this.instance;
+  }
+
 }

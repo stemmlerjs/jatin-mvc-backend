@@ -2,6 +2,7 @@
 import * as Express from 'express'
 import http from 'http';
 import { MongoDB } from './mongoDB';
+import { resetDatabase } from './scripts/resetDatabase';
 
 interface ServerConfig {
   port: number;
@@ -23,6 +24,8 @@ export class TestHarness {
   async start () {
     // Start the database
     await this.mongo.start();
+
+    await resetDatabase(this.mongo);
 
     // Start express
     this.http = this.express.listen(this.serverConfig.port);
