@@ -12,6 +12,7 @@ export const createUser = async (req: Request, res: Response) => {
       throw new Error('Username already exists');
     }
   } catch (error: any) {
+    console.log(error);
     return res.status(400).json({ ok: false, error: error.message });
   }
 
