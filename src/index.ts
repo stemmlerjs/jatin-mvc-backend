@@ -1,18 +1,9 @@
 
-import mongoose from 'mongoose';
 import { config } from './config';
 import app from './app';
 import http from 'http';
 
 let server: http.Server;
-
-let mongooseFactory = () => {
-  return {
-    start: () => mongoose.connect(config.mongoUrl)
-  }
-}
-
-export { mongooseFactory }
 
 // // Start mongo
 // mongoose.connect(config.mongoUrl).then(() => {
