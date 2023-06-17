@@ -2,13 +2,14 @@
 import express from 'express';
 import * as Express from 'express'
 import http from 'http';
+import { UserRouter } from './userRouter';
 
 interface ServerConfig {
-  port: number
+  port: number;
 }
 
 interface Routes {
-  userRoute: Express.Router;
+  userRouter: UserRouter;
 }
 
 export class RestfulAPI {
@@ -36,7 +37,7 @@ export class RestfulAPI {
     this.instance.get('/health', (req, res) => {
       res.json({ ok: true });
     });
-    this.instance.use('/user', routes.userRoute);
+    this.instance.use('/user', routes.userRouter.getRouter());
   }
 
   async start(): Promise<void> {

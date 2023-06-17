@@ -1,16 +1,19 @@
 
 import * as mongoose from 'mongoose';
+import { MongoModels } from './models';
 
 interface MongoConfig {
   mongoUrl: string;
 }
 
-export class MongoDB {
+export class MongoDBConnection {
   private mongoConfig: MongoConfig;
   private instance: any;
+  private models: MongoModels;
 
   constructor (mongoConfig: MongoConfig) {
     this.mongoConfig = mongoConfig;
+    this.models = new MongoModels();
   }
 
   async start () {
@@ -24,6 +27,10 @@ export class MongoDB {
 
   getInstance () {
     return this.instance;
+  }
+
+  getModels () {
+    return this.models.getModels();
   }
 
 }

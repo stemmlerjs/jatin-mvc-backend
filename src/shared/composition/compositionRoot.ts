@@ -1,19 +1,17 @@
 
 import { ApplicationConfig } from "../../config";
-import { MongoDB } from "../../mongoDB";
+import { MongoDBConnection } from "../infra/database/mongoDBConnection";
 import { RestfulAPI } from "../infra/api/restfulAPI";
-import { createUserControllerFactory } from "../infra/api/controller";
 import { WebTestDriver } from "../../webTestDriver";
-import { UserService } from "../../modules/users/services/userService";
-import { userRoute } from '../infra/api/route/index'
-
-let userService  = new UserService();
-export let createUserController = createUserControllerFactory(userService);
-
+import { UserService } from "../../modules/users/application/userService";
+import { MongoUserRepo } from "../../modules/users/infra/mongoUserRepo";
+import { UserRepo } from "../../modules/users/infra/userRepo";
+import { UserController } from "../infra/api/usersController";
+import { UserRouter } from "../infra/api/userRouter";
 
 /**
  * @class CompositionRoot
- * @type Structurer
+ * @type 
  * 
  * - to build the various dependencies
  * - to link dependencies together
@@ -22,16 +20,46 @@ export let createUserController = createUserControllerFactory(userService);
  */
 
 export class CompositionRoot {
-  private mongo: MongoDB;
+  private mongoDBConnection: MongoDBConnection;
   private api: RestfulAPI;
+
+  private userRepo: UserRepo;
+  private userService: UserService;
+  private userController: UserController;
+  private userRouter: UserRouter;
+
   private webTestDriver: WebTestDriver;
   private applicationConfig: ApplicationConfig;
 
   constructor () {
     this.applicationConfig = this.createApplicationConfig();
-    this.mongo = this.createMongoDB()
+    this.mongoDBConnection = this.createMongoDB()
+    this.userRepo = this.createUserRepo();
+    this.userService = this.createUserService()
+    this.userController = this.createUserController();
+    this.userRouter = this.createUserRouter();
     this.api = this.createRestfulAPI();
     this.webTestDriver = this.createWebTestDriver();
+  }
+
+  private createUserRouter () {
+    let userController = this.getUserController();
+    return new UserRouter(userController);
+  }
+
+  private createUserController () {
+    let userService = this.getUserService();
+    return new UserController(userService);
+  }
+
+  private createUserService () {
+    let userRepo = this.getUserRepo();
+    return new UserService(userRepo);
+  }
+
+  private createUserRepo () {
+    let mongoDBConnection = this.getMongoDBConnection()
+    return new MongoUserRepo(mongoDBConnection)
   }
 
   private createApplicationConfig () {
@@ -55,25 +83,23 @@ export class CompositionRoot {
 
   private createMongoDB () {
     const databaseConfig = this.applicationConfig.getDatabaseConfig()
-    return new MongoDB({ mongoUrl: databaseConfig.url });
+    return new MongoDBConnection({ mongoUrl: databaseConfig.url });
   }
 
   private createRestfulAPI () {
-    return new RestfulAPI(this.applicationConfig.getServerConfig(), {
-      // TODO;
-      userRoute
-    });
+    let userRouter = this.getUserRouter();
+    return new RestfulAPI(this.applicationConfig.getServerConfig(), { userRouter });
   }
 
   private createWebTestDriver () {
-    let mongo = this.getMongo();
+    let mongo = this.getMongoDBConnection();
     let api = this.getAPI();
     return new WebTestDriver(api, mongo)
   }
 
-  getMongo () {
-    if (!this.mongo) throw new Error('Mongo not yet created');
-    return this.mongo;
+  getMongoDBConnection () {
+    if (!this.mongoDBConnection) throw new Error('Mongo not yet created');
+    return this.mongoDBConnection;
   }
 
   getAPI () {
@@ -84,6 +110,26 @@ export class CompositionRoot {
   getWebTestDriver () {
     if (!this.webTestDriver) throw new Error('Web test driver not yet created');
     return this.webTestDriver;
+  }
+
+  getUserService () {
+    if (!this.userService) throw new Error('User service not yet created');
+    return this.userService;
+  }
+
+  getUserRepo () {
+    if (!this.userRepo) throw new Error('User repo not yet created');
+    return this.userRepo;
+  }
+
+  getUserController () {
+    if (!this.userController) throw new Error('User controller not yet created');
+    return this.userController;
+  }
+
+  getUserRouter () {
+    if (!this.userRouter) throw new Error('User router not yet created');
+    return this.userRouter;
   }
 }
 

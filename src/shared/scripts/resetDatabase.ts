@@ -1,6 +1,6 @@
 
-import { MongoDB } from "../../mongoDB";
+import { MongoDBConnection } from "../infra/database/mongoDBConnection";
 
-export async function resetDatabase (mongo: MongoDB) {
+export async function resetDatabase (mongo: MongoDBConnection) {
   await mongo.getInstance().connection.dropDatabase()
 }

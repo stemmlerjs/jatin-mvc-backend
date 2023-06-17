@@ -1,15 +1,15 @@
 
 
-import { MongoDB } from './mongoDB';
+import { MongoDBConnection } from './shared/infra/database/mongoDBConnection';
 import { RestfulAPI } from './shared/infra/api/restfulAPI';
 import { resetDatabase } from './shared/scripts/resetDatabase';
 
 export class WebTestDriver {
   
   private api: RestfulAPI;
-  private mongo: MongoDB;
+  private mongo: MongoDBConnection;
 
-  constructor (api: RestfulAPI, mongo: MongoDB) {
+  constructor (api: RestfulAPI, mongo: MongoDBConnection) {
     this.api = api;
     this.mongo = mongo;
   }
