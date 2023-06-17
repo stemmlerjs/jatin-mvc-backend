@@ -18,7 +18,7 @@
   },
   "include": [
     "src/**/*"
-  ],
+, "src/scripts", "e2e"  ],
   "exclude": [
     "src/**/*.spec.ts"
   ]

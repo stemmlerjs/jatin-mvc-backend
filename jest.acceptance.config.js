@@ -1,9 +1,10 @@
 module.exports = {
+  maxWorkers: 1,
   transform: {
     '^.+\\.ts?$': 'ts-jest',
   },
   testEnvironment: 'node',
-  testRegex: './(src)/.*\\.(infra.spec)?\\.(ts|ts)$',
+  testRegex: './(src|e2e)/.*\\.(acceptance)?\\.(ts|ts)$',
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-  roots: ['<rootDir>/src'],
+  roots: ['<rootDir>/e2e'],
 };

@@ -1,9 +1,34 @@
 
-let mongoUsername = 'root'
-let mongoPassword = 'example';
+interface DatabaseConfig {
+  url: string;
+  host: string;
+  username: string;
+  password: string;
+  databaseName: string;
+}
 
-export const config = {
-  mongoUrl: `mongodb://${mongoUsername}:${mongoPassword}@localhost:27017`,
-  mongoDatabase: '',
-  port: 3000,
-};
+interface ServerConfig {
+  port: number;
+}
+
+interface Config {
+  databaseConfig: DatabaseConfig;
+  serverConfig: ServerConfig;
+}
+
+export class ApplicationConfig {
+
+  private config: Config;
+
+  constructor (config: Config) {
+    this.config = config;
+  }
+
+  getServerConfig (): ServerConfig {
+    return this.config.serverConfig;
+  }
+
+  getDatabaseConfig (): DatabaseConfig {
+    return this.config.databaseConfig;
+  }
+}

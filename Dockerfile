@@ -1,8 +1,9 @@
-FROM node:12.18.4
+FROM node:16
 
-COPY . /usr/src/app
-WORKDIR /usr/src/app
+WORKDIR /app
 
-RUN npm run install
+COPY . .
 
-CMD ["npm", "start"]
+RUN npm install 
+
+CMD ["npm", "run", "test:acceptance:dev"]
